@@ -1,3 +1,6 @@
+const logger = require('./utils/logger')
+const config = require('./utils/config')
+
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -12,9 +15,8 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog',blogSchema)
 
-const mongoURL = 'mongodb+srv://trachit752:rachit123@cluster0.aj5o1f1.mongodb.net/blogs?retryWrites=true&w=majority'
-mongoose.connect(mongoURL).then(res => {
-    console.log("Connected")
+mongoose.connect(config.MONGODB_URI).then(res => {
+    logger.info("Connected")
 })
 
 app.use(cors())
@@ -29,13 +31,11 @@ app.get('/api/blogs',(request,response) => {
 app.post('/api/blogs',(request,response) => {
     const blog = new Blog(request.body)
     blog.save().then(result => {
-        console.log(result)
+        logger.info(result)
         response.status(201).json(result)
     })
 })
 
-const PORT = 3003
-
-app.listen(PORT , () => {
-    console.log(`Server is running on port ${PORT}`)
+app.listen(config.PORT , () => {
+    logger.info(`Server is running on port ${PORT}`)
 })
